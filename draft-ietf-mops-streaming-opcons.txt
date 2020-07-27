@@ -5,14 +5,14 @@
 MOPS                                                          J. Holland
 Internet-Draft                                 Akamai Technologies, Inc.
 Intended status: Informational                                  A. Begen
-Expires: 16 August 2020                                  Networked Media
+Expires: 13 January 2021                                 Networked Media
                                                               S. Dawkins
                                                      Tencent America LLC
-                                                        13 February 2020
+                                                            12 July 2020
 
 
              Operational Considerations for Streaming Media
-                  draft-ietf-mops-streaming-opcons-00
+                  draft-ietf-mops-streaming-opcons-02
 
 Abstract
 
@@ -35,7 +35,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 16 August 2020.
+   This Internet-Draft will expire on 13 January 2021.
 
 Copyright Notice
 
@@ -53,35 +53,38 @@ Copyright Notice
 
 
 
-Holland, et al.          Expires 16 August 2020                 [Page 1]
+Holland, et al.          Expires 13 January 2021                [Page 1]
 
-Internet-Draft             Media Streaming Ops             February 2020
+Internet-Draft             Media Streaming Ops                 July 2020
 
 
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-     1.1.  Venues for Contribution and Discussion  . . . . . . . . .   3
-   2.  Bandwidth Provisioning  . . . . . . . . . . . . . . . . . . .   3
-     2.1.  Scaling Requirements for Media Delivery . . . . . . . . .   3
-       2.1.1.  Video Bitrates  . . . . . . . . . . . . . . . . . . .   3
-       2.1.2.  Virtual Reality Bitrates  . . . . . . . . . . . . . .   4
-     2.2.  Path Requirements . . . . . . . . . . . . . . . . . . . .   4
-     2.3.  Caching Systems . . . . . . . . . . . . . . . . . . . . .   5
-     2.4.  Predictable Usage Profiles  . . . . . . . . . . . . . . .   5
-     2.5.  Unpredictable Usage Profiles  . . . . . . . . . . . . . .   5
-   3.  Adaptive Bitrate  . . . . . . . . . . . . . . . . . . . . . .   6
-     3.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .   6
-     3.2.  Segmented Delivery  . . . . . . . . . . . . . . . . . . .   7
-       3.2.1.  Idle Time between Segments  . . . . . . . . . . . . .   7
-       3.2.2.  Head-of-Line Blocking . . . . . . . . . . . . . . . .   7
-     3.3.  Unreliable Transport  . . . . . . . . . . . . . . . . . .   8
-   4.  Doc History and Side Notes  . . . . . . . . . . . . . . . . .   8
-   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   9
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   9
-   7.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   9
-   8.  Informative References  . . . . . . . . . . . . . . . . . . .   9
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  10
+     1.1.  Notes for Contributors and Reviewers  . . . . . . . . . .   3
+       1.1.1.  Venues for Contribution and Discussion  . . . . . . .   3
+       1.1.2.  Template for Contributions  . . . . . . . . . . . . .   3
+       1.1.3.  History of Public Discussion  . . . . . . . . . . . .   4
+   2.  Bandwidth Provisioning  . . . . . . . . . . . . . . . . . . .   5
+     2.1.  Scaling Requirements for Media Delivery . . . . . . . . .   5
+       2.1.1.  Video Bitrates  . . . . . . . . . . . . . . . . . . .   5
+       2.1.2.  Virtual Reality Bitrates  . . . . . . . . . . . . . .   6
+     2.2.  Path Requirements . . . . . . . . . . . . . . . . . . . .   6
+     2.3.  Caching Systems . . . . . . . . . . . . . . . . . . . . .   6
+     2.4.  Predictable Usage Profiles  . . . . . . . . . . . . . . .   7
+     2.5.  Unpredictable Usage Profiles  . . . . . . . . . . . . . .   7
+     2.6.  Extremely Unpredictable Usage Profiles  . . . . . . . . .   8
+   3.  Adaptive Bitrate  . . . . . . . . . . . . . . . . . . . . . .   9
+     3.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .   9
+     3.2.  Segmented Delivery  . . . . . . . . . . . . . . . . . . .   9
+       3.2.1.  Idle Time between Segments  . . . . . . . . . . . . .  10
+       3.2.2.  Head-of-Line Blocking . . . . . . . . . . . . . . . .  10
+     3.3.  Unreliable Transport  . . . . . . . . . . . . . . . . . .  10
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  11
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .  11
+   6.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  11
+   7.  Informative References  . . . . . . . . . . . . . . . . . . .  11
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  13
 
 1.  Introduction
 
@@ -103,16 +106,17 @@ Table of Contents
    relate to quality of experience in internet video delivery.  The
    focus is on capturing characteristics of video delivery that have
    surprised network designers or transport experts without specific
+
+
+
+Holland, et al.          Expires 13 January 2021                [Page 2]
+
+Internet-Draft             Media Streaming Ops                 July 2020
+
+
    video expertise, since these highlight key differences between common
    assumptions in existing networking documents and observations of
    video delivery issues in practice.
-
-
-
-Holland, et al.          Expires 16 August 2020                 [Page 2]
-
-Internet-Draft             Media Streaming Ops             February 2020
-
 
    Making specific recommendations for mitigating these issues is out of
    scope, though some existing mitigations are mentioned in passing.
@@ -120,19 +124,107 @@ Internet-Draft             Media Streaming Ops             February 2020
    proposals to use in describing how new technologies address or avoid
    these existing observed problems.
 
-1.1.  Venues for Contribution and Discussion
+1.1.  Notes for Contributors and Reviewers
 
-   Note to RFC Editor: Please remove this section before publication
+   Note to RFC Editor: Please remove this section and its subsections
+   before publication.
 
-   (To the editor: check this repository URL after the draft is adopted.
-   The working group may create its own repository)
+   This section is to provide references to make it easier to review the
+   development and discussion on the draft so far.
 
-   This document is in the Github repository at
-   https://github.com/GrumpyOldTroll/ietf-mops-drafts.  Readers are
-   welcome to open issues and send pull requests for this document.
+1.1.1.  Venues for Contribution and Discussion
+
+   This document is in the Github repository at:
+
+   https://github.com/ietf-wg-mops/draft-ietf-mops-streaming-opcons
+
+   Readers are welcome to open issues and send pull requests for this
+   document.
 
    Substantial discussion of this document should take place on the MOPS
    working group mailing list (mops@ietf.org).
+
+   *  Join: https://www.ietf.org/mailman/listinfo/mops
+
+   *  Search: https://mailarchive.ietf.org/arch/browse/mops/
+
+1.1.2.  Template for Contributions
+
+   Contributions are solicited regarding issues and considerations that
+   have an impact on media streaming operations.
+
+   Please note that contributions may be merged and substantially
+   edited, and as a reminder, please carefully consider the Note Well
+   before contributing: https://datatracker.ietf.org/submit/note-well/
+
+   Contributions can be emailed to mops@ietf.org, submitted as issues to
+   the issue tracker of the repository in Section 1.1.1, or emailed to
+   the document authors at draft-ietf-mops-streaming-opcons@ietf.org.
+
+
+
+
+
+Holland, et al.          Expires 13 January 2021                [Page 3]
+
+Internet-Draft             Media Streaming Ops                 July 2020
+
+
+   Contributors describing an issue not yet addressed in the draft are
+   requested to provide the following information, where applicable:
+
+   *  a suggested title or name for the issue
+
+   *  a long-term pointer to the best reference describing the issue
+
+   *  a short description of the nature of the issue and its impact on
+      media quality of service, including:
+
+      -  where in the network this issue has root causes
+
+      -  who can detect this issue when it occurs
+
+   *  an overview of the issue's known prevalence in practice.  pointers
+      to write-ups of high-profile incidents are a plus.
+
+   *  a list of known mitigation techniques, with (for each known
+      mitigation):
+
+      -  a name for the mitigation technique
+
+      -  a long-term pointer to the best reference describing it
+
+      -  a short description of the technique:
+
+         o  what it does
+
+         o  where in the network it operates
+
+         o  an overview of the tradeoffs involved-how and why it's
+            helpful, what it costs.
+
+      -  supplemental information about the technique's deployment
+         prevalence and status
+
+1.1.3.  History of Public Discussion
+
+   Presentations:
+
+   *  IETF 105 BOF:
+
+      https://www.youtube.com/watch?v=4G3YBVmn9Eo&t=47m21s
+
+   *  IETF 106 meeting:
+
+      https://www.youtube.com/watch?v=4_k340xT2jM&t=7m23s
+
+
+
+
+Holland, et al.          Expires 13 January 2021                [Page 4]
+
+Internet-Draft             Media Streaming Ops                 July 2020
+
 
 2.  Bandwidth Provisioning
 
@@ -145,44 +237,50 @@ Internet-Draft             Media Streaming Ops             February 2020
    approximately matches the bandwidth requirement estimates from
    several video providers is given in [MSOD]:
 
-   Kbps = (HEIGHT * WIDTH * FRAME_RATE) / (15 * 1024)
+   Kbps = (HEIGHT * WIDTH * FRAME_RATE) / (MOTION_FACTOR * 1024)
 
-   Height and width are in pixels, and frame rate is in frames per
-   second.  The actual bitrate required for a specific video will also
-   depend on the codec used, fidelity desired and some other
-   characteristics of the video itself, such as the amount and frequency
-   of high-detail motion, which may influence the compressability of the
-   content, but this equation provides a rough estimate.
+   Height and width are in pixels, frame rate is in frames per second,
+   and the motion factor is a value that ranges from 20 for a low-motion
+   talking heads video to 7 for sports, and content with a lot of screen
+   changes.
+
+   The motion factor captures the variability in bitrate due to the
+   amount and frequency of high-detail motion, which generally
+   influences the compressability of the content.
+
+   The exact bitrate required for a particular video also depends on a
+   number of specifics about the codec used and how the codec-specific
+   tuning parameters are matched to the content, but this equation
+   provides a rough estimate that approximates the usual bitrate
+   characteristics using the most common codecs and settings for
+   production traffic.
 
    Here are a few common resolutions used for video content, with their
-   typical per-user bandwidth requirements according to this formula:
+   typical and peak per-user bandwidth requirements for 60 frames per
+   second (FPS):
+
+           +------------+----------------+----------+---------+
+           | Name       | Width x Height | Typical  | Peak    |
+           +============+================+==========+=========+
+           | DVD        | 720 x 480      | 1.3 Mbps | 3 Mbps  |
+           +------------+----------------+----------+---------+
+           | 720p (1K)  | 1280 x 720     | 3.6 Mbps | 5 Mbps  |
+           +------------+----------------+----------+---------+
+           | 1080p (2K) | 1920 x 1080    | 8.1 Mbps | 18 Mbps |
+           +------------+----------------+----------+---------+
+           | 2160p (4k) | 3840 x 2160    | 32 Mbps  | 70 Mbps |
+           +------------+----------------+----------+---------+
+
+                                 Table 1
 
 
 
 
 
-
-
-
-
-Holland, et al.          Expires 16 August 2020                 [Page 3]
+Holland, et al.          Expires 13 January 2021                [Page 5]
 
-Internet-Draft             Media Streaming Ops             February 2020
+Internet-Draft             Media Streaming Ops                 July 2020
 
-
-      +------------+----------------+-------------------------------+
-      | Name       | Width x Height | Approximate Bitrate for 60fps |
-      +============+================+===============================+
-      | DVD        | 720 x 480      | 1.3 Mbps                      |
-      +------------+----------------+-------------------------------+
-      | 720p (1K)  | 1280 x 720     | 3.6 Mbps                      |
-      +------------+----------------+-------------------------------+
-      | 1080p (2K) | 1920 x 1080    | 8.1 Mbps                      |
-      +------------+----------------+-------------------------------+
-      | 2160p (4k) | 3840 x 2160    | 32 Mbps                       |
-      +------------+----------------+-------------------------------+
-
-                                  Table 1
 
 2.1.2.  Virtual Reality Bitrates
 
@@ -212,20 +310,14 @@ Internet-Draft             Media Streaming Ops             February 2020
    bandwidth requirements for a router on the delivery path with that
    number of users downstream.  For example, at a node with 10,000
    downstream users simultaneously consuming video streams,
-   approximately up to 80 Gbps would be necessary in order for all of
-   them to get 1080p resolution at 60 fps.
+   approximately 80 Gbps would be necessary in order for all of them to
+   get typical content at 1080p resolution at 60 fps, or up to 180 Gbps
+   to get sustained high-motion content such as sports, while
+   maintaining the same resolution.
 
    However, when there is some overlap in the feeds being consumed by
    end users, it is sometimes possible to reduce the bandwidth
    provisioning requirements for the network by performing some kind of
-
-
-
-Holland, et al.          Expires 16 August 2020                 [Page 4]
-
-Internet-Draft             Media Streaming Ops             February 2020
-
-
    replication within the network.  This can be achieved via object
    caching with delivery of replicated objects over individual
    connections, and/or by packet-level replication using multicast.
@@ -238,6 +330,13 @@ Internet-Draft             Media Streaming Ops             February 2020
 
    TBD: pros, cons, tradeoffs of caching designs at different locations
    within the network?
+
+
+
+Holland, et al.          Expires 13 January 2021                [Page 6]
+
+Internet-Draft             Media Streaming Ops                 July 2020
+
 
    Peak vs. average provisioning, and effects on peering point
    congestion under peak load?
@@ -274,14 +373,6 @@ Internet-Draft             Media Streaming Ops             February 2020
    with asymmetric bandwidth requirements.  A common example might be an
    HTTP GET operation, where a client sends a relatively small HTTP GET
    request for a resource to an HTTP server, and often receives a
-
-
-
-Holland, et al.          Expires 16 August 2020                 [Page 5]
-
-Internet-Draft             Media Streaming Ops             February 2020
-
-
    significantly larger response carrying the requested resource.  When
    HTTP is commonly used to stream movie-length video, the ratio between
    response size and request size can become quite large.
@@ -295,6 +386,13 @@ Internet-Draft             Media Streaming Ops             February 2020
    upstream bandwidth than downstream bandwidth.  This strategy usually
    works, except when it does not, because application bandwidth usage
    patterns have changed.
+
+
+
+Holland, et al.          Expires 13 January 2021                [Page 7]
+
+Internet-Draft             Media Streaming Ops                 July 2020
+
 
    One example of this type of change was when peer-to-peer file sharing
    applications gained popularity in the early 2000s.  To take one well-
@@ -320,6 +418,52 @@ Internet-Draft             Media Streaming Ops             February 2020
    watch for increasing numbers of end users uploading significant
    amounts of content.
 
+2.6.  Extremely Unpredictable Usage Profiles
+
+   The causes of unpredictable usage described in Section 2.5 were more
+   or less the result of human choices, but we were reminded during a
+   post-IETF 107 meeting that humans are not always in control, and
+   forces of nature can cause enormous fluctuations in traffic patterns.
+
+   In his talk, Sanjay Mishra [Mishra] reported that after the CoViD-19
+   pandemic broke out in early 2020,
+
+   *  Comcast's streaming and web video consumption rose by 38%, with
+      their reported peak traffic up 32% overall between March 1 to
+      March 30 [Comcast],
+
+   *  AT&T reported a 28% jump in core network traffic (single day in
+      April, as compared to pre stay-at-home daily average traffic),
+      with video accounting for nearly half of all mobile network
+      traffic, while social networking and web browsing remained the
+      highest percentage (almost a quarter each) of overall mobility
+      traffic [ATT], and
+
+   *  Verizon reported similar trends with video traffic up 36% over an
+      average day (pre COVID-19) [Verizon].
+
+
+
+
+Holland, et al.          Expires 13 January 2021                [Page 8]
+
+Internet-Draft             Media Streaming Ops                 July 2020
+
+
+   We note that other operators saw similar spikes during this time
+   period.  Craig Labowitz [Labovitz] reported
+
+   *  Weekday peak traffic increases over 45%-50% from pre-lockdown
+      levels,
+
+   *  A 30% increase in upstream traffic over their pre-pandemic levels,
+      and
+
+   *  A steady increase in the overall volume of DDoS traffic, with
+      amounts exceeding the pre-pandemic levels by 40%. (He attributed
+      this increase to the significant rise in gaming-related DDoS
+      attacks ([LabovitzDDoS]), as gaming usage also increased.)
+
 3.  Adaptive Bitrate
 
 3.1.  Overview
@@ -330,14 +474,6 @@ Internet-Draft             Media Streaming Ops             February 2020
    the successful application-layer download speed, then chooses a video
    bitrate (among the limited number of available options) that fits
    within that bandwidth, typically adjusting as changes in available
-
-
-
-Holland, et al.          Expires 16 August 2020                 [Page 6]
-
-Internet-Draft             Media Streaming Ops             February 2020
-
-
    bandwidth occur in the network or changes in capabilities occur in
    the player (such as available memory, CPU, display size, etc.).
 
@@ -358,6 +494,17 @@ Internet-Draft             Media Streaming Ops             February 2020
 
    This kind of bandwidth-measurement systems can experience trouble in
    several ways that can be affected by networking design choices.
+
+
+
+
+
+
+
+Holland, et al.          Expires 13 January 2021                [Page 9]
+
+Internet-Draft             Media Streaming Ops                 July 2020
+
 
 3.2.1.  Idle Time between Segments
 
@@ -386,14 +533,6 @@ Internet-Draft             Media Streaming Ops             February 2020
    application.  Because of the sliding window in TCP, many packets may
    be accepted by the receiver without being available to the
    application until the missing packet arrives.  Upon arrival of the
-
-
-
-Holland, et al.          Expires 16 August 2020                 [Page 7]
-
-Internet-Draft             Media Streaming Ops             February 2020
-
-
    one missing packet after retransmit, the receiver will suddenly get
    access to a lot of data at the same time.
 
@@ -415,6 +554,14 @@ Internet-Draft             Media Streaming Ops             February 2020
    In contrast to segmented delivery, several applications use UDP or
    unreliable SCTP to deliver RTP or raw TS-formatted video.
 
+
+
+
+Holland, et al.          Expires 13 January 2021               [Page 10]
+
+Internet-Draft             Media Streaming Ops                 July 2020
+
+
    Under congestion and loss, this approach generally experiences more
    video artifacts with fewer delay or head-of-line blocking effects.
    Often one of the key goals is to reduce latency, to better support
@@ -428,52 +575,29 @@ Internet-Draft             Media Streaming Ops             February 2020
    [RFC6190]), to proprietary methods for detecting quality of
    experience issues and cutting off video.
 
-4.  Doc History and Side Notes
-
-   Note to RFC Editor: Please remove this section before publication
-
-   TBD: suggestion from mic at IETF 106 (Mark Nottingham): dive into the
-   different constraints coming from different parts of the network or
-   distribution channels. (regarding questions about how to describe the
-   disconnect between demand vs. capacity, while keeping good archival
-   value.) https://www.youtube.com/watch?v=4_k340xT2jM&t=13m
-
-   TBD: suggestion from mic at IETF 106 (Dave Oran + Glenn Deen
-   responding): pre-placement for many use cases is useful-distinguish
-   between live vs. cacheable.  "People assume high-demand == live, but
-   not always true" with popular netflix example.
-
-
-
-Holland, et al.          Expires 16 August 2020                 [Page 8]
-
-Internet-Draft             Media Streaming Ops             February 2020
-
-
-   (Glenn): something about latency requirements for cached vs.
-   streaming on live vs.  pre-recorded content, and breaking
-   requirements into 2 separate charts.  also: "Standardized ladder" for
-   adaptive bit rate rates suggested, declined as out of scope.
-   https://www.youtube.com/watch?v=4_k340xT2jM&t=14m15s
-
-   TBD: suggestion at the mic from IETF 106 (Aaron Falk): include
-   industry standard metrics from citations, some standard scoping
-   metrics may be already defined. https://www.youtube.com/
-   watch?v=4_k340xT2jM&t=19m15s
-
-5.  IANA Considerations
+4.  IANA Considerations
 
    This document requires no actions from IANA.
 
-6.  Security Considerations
+5.  Security Considerations
 
    This document introduces no new security issues.
 
-7.  Acknowledgements
+6.  Acknowledgements
 
-   (Your name could go here!)
+   Thanks to Mark Nottingham, Glenn Deen, Dave Oran, Aaron Falk, Kyle
+   Rose, Leslie Daigle, Lucas Pardue, Matt Stock, and Alexandre
+   Gouaillard for their very helpful reviews and comments.
 
-8.  Informative References
+7.  Informative References
+
+   [ATT]      AT&T, "Tuesday (March 24, 2020) Network Insights", March
+              2020, <https://about.att.com/pages/COVID-19/updates.html>.
+
+   [Comcast]  CNBC, "Comcast sees network traffic surge amid coronavirus
+              outbreak", March 2020,
+              <https://www.cnbc.com/video/2020/03/30/comcast-sees-
+              network-traffic-surge-amid-coronavirus-outbreak.html>.
 
    [CVNI]     Cisco Systems, Inc., "Cisco Visual Networking Index:
               Forecast and Trends, 2017-2022 White Paper", 27 February
@@ -484,6 +608,33 @@ Internet-Draft             Media Streaming Ops             February 2020
    [DASH]     "Information technology -- Dynamic adaptive streaming over
               HTTP (DASH) -- Part 1: Media presentation description and
               segment formats", ISO/IEC 23009-1:2019, 2019.
+
+
+
+
+
+Holland, et al.          Expires 13 January 2021               [Page 11]
+
+Internet-Draft             Media Streaming Ops                 July 2020
+
+
+   [Labovitz] Labovitz, C. and Nokia Deepfield, "Network traffic
+              insights in the time of COVID-19: April 9 update", April
+              2020, <https://www.nokia.com/blog/network-traffic-
+              insights-time-covid-19-april-9-update/>.
+
+   [LabovitzDDoS]
+              Takahashi, D. and Venture Beat, "Why the game industry is
+              still vulnerable to DDoS attacks", May 2018,
+              <https://venturebeat.com/2018/05/13/why-the-game-industry-
+              is-still-vulnerable-to-distributed-denial-of-service-
+              attacks/>.
+
+   [Mishra]   Mishra, S. and J. Thibeault, "An update on Streaming Video
+              Alliance", 2020, <https://datatracker.ietf.org/meeting/
+              interim-2020-mops-01/materials/slides-interim-2020-mops-
+              01-sessa-april-15-2020-mops-interim-an-update-on-
+              streaming-video-alliance>.
 
    [MSOD]     Akamai Technologies, Inc., "Media Services On Demand:
               Encoder Best Practices", 2019, <https://learn.akamai.com/
@@ -497,15 +648,6 @@ Internet-Draft             Media Streaming Ops             February 2020
               <https://dl.acm.org/doi/10.1145/2229087.2229092>.
 
    [PCC]      al., S.S.e., "Emerging MPEG Standards for Point Cloud
-
-
-
-
-Holland, et al.          Expires 16 August 2020                 [Page 9]
-
-Internet-Draft             Media Streaming Ops             February 2020
-
-
               Compression", March 2019,
               <https://ieeexplore.ieee.org/document/8571288>.
 
@@ -521,6 +663,16 @@ Internet-Draft             Media Streaming Ops             February 2020
               of Explicit Congestion Notification (ECN) to IP",
               RFC 3168, DOI 10.17487/RFC3168, September 2001,
               <https://www.rfc-editor.org/info/rfc3168>.
+
+
+
+
+
+
+Holland, et al.          Expires 13 January 2021               [Page 12]
+
+Internet-Draft             Media Streaming Ops                 July 2020
+
 
    [RFC5594]  Peterson, J. and A. Cooper, "Report from the IETF Workshop
               on Peer-to-Peer (P2P) Infrastructure, May 28, 2008",
@@ -546,6 +698,13 @@ Internet-Draft             Media Streaming Ops             February 2020
               RFC 8216, DOI 10.17487/RFC8216, August 2017,
               <https://www.rfc-editor.org/info/rfc8216>.
 
+   [Verizon]  Rorbuck, M. and Fierce Telecom, "Verizon: U.S. network
+              usage starts to normalize as subscribers settle into new
+              routines", April 2020,
+              <https://www.fiercetelecom.com/telecom/verizon-u-s-
+              network-usage-starts-to-normalize-as-subscribers-settle-
+              into-new-routines>.
+
 Authors' Addresses
 
    Jake Holland
@@ -553,14 +712,6 @@ Authors' Addresses
    150 Broadway
    Cambridge, MA 02144,
    United States of America
-
-
-
-
-Holland, et al.          Expires 16 August 2020                [Page 10]
-
-Internet-Draft             Media Streaming Ops             February 2020
-
 
    Email: jakeholland.net@gmail.com
 
@@ -570,6 +721,13 @@ Internet-Draft             Media Streaming Ops             February 2020
    Turkey
 
    Email: ali.begen@networked.media
+
+
+
+
+Holland, et al.          Expires 13 January 2021               [Page 13]
+
+Internet-Draft             Media Streaming Ops                 July 2020
 
 
    Spencer Dawkins
@@ -613,4 +771,14 @@ Internet-Draft             Media Streaming Ops             February 2020
 
 
 
-Holland, et al.          Expires 16 August 2020                [Page 11]
+
+
+
+
+
+
+
+
+
+
+Holland, et al.          Expires 13 January 2021               [Page 14]
